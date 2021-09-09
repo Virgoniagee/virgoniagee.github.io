@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","images":"/images","scheme":"Pisces","version":"8.3.0","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="概述servlet在JavaWeb中的作用、实现方法及常用类">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Servlet-1">
+<meta property="og:url" content="http://example.com/2021/07/02/Servlet-1/index.html">
+<meta property="og:site_name" content="Virgoniagee&#39;s blog">
+<meta property="og:description" content="概述servlet在JavaWeb中的作用、实现方法及常用类">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-07-01T17:55:34.000Z">
+<meta property="article:modified_time" content="2021-07-01T17:57:32.083Z">
+<meta property="article:author" content="Virogoniagee">
+<meta property="article:tag" content="servlet">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2021/07/02/Servlet-1/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>Servlet-1 | Virgoniagee's blog</title>
+  
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Virgoniagee's blog</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Servlet"><span class="nav-number">1.</span> <span class="nav-text">Servlet</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#what-is"><span class="nav-number">1.1.</span> <span class="nav-text">what is##</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#implement-Servlet"><span class="nav-number">1.2.</span> <span class="nav-text">implement Servlet</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#web-xml-%E9%85%8D%E7%BD%AE"><span class="nav-number">1.2.1.</span> <span class="nav-text">web.xml 配置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Servlet-%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F"><span class="nav-number">1.3.</span> <span class="nav-text">Servlet 生命周期</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#service-%E6%96%B9%E6%B3%95-if-get-or-post"><span class="nav-number">1.4.</span> <span class="nav-text">service 方法-if get or post</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%A8-Servlet-%E7%9A%84%E7%BB%A7%E6%89%BF%E5%AD%90%E7%B1%BB%E5%AE%9E%E7%8E%B0%E7%B1%BB"><span class="nav-number">1.5.</span> <span class="nav-text">用 Servlet 的继承子类实现类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#HttpServlet"><span class="nav-number">1.5.1.</span> <span class="nav-text">HttpServlet</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ServletConfig"><span class="nav-number">1.5.2.</span> <span class="nav-text">ServletConfig</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ServletContext"><span class="nav-number">1.5.3.</span> <span class="nav-text">ServletContext</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BD%9C%E7%94%A8"><span class="nav-number">1.5.3.1.</span> <span class="nav-text">作用</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HttpServletRequest"><span class="nav-number">1.5.4.</span> <span class="nav-text">HttpServletRequest</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95"><span class="nav-number">1.5.4.1.</span> <span class="nav-text">常用方法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HttpServletResponse"><span class="nav-number">1.5.5.</span> <span class="nav-text">HttpServletResponse</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Virogoniagee"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Virogoniagee</p>
+  <div class="site-description" itemprop="description">be 😎. be 🐱</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">16</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Virgoniagee" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Virgoniagee" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:sherleypeetzo@gmail.com" title="E-Mail → mailto:sherleypeetzo@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/07/02/Servlet-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Virogoniagee">
+      <meta itemprop="description" content="be 😎. be 🐱">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Virgoniagee's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Servlet-1
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2021-07-02 01:55:34 / 修改时间：01:57:32" itemprop="dateCreated datePublished" datetime="2021-07-02T01:55:34+08:00">2021-07-02</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/servlet/" itemprop="url" rel="index"><span itemprop="name">servlet</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+            <div class="post-description">概述servlet在JavaWeb中的作用、实现方法及常用类</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="Servlet"><a href="#Servlet" class="headerlink" title="Servlet"></a>Servlet</h1><h2 id="what-is"><a href="#what-is" class="headerlink" title="what is##"></a>what is##</h2><ul>
+<li>是 JavaEE 规范之一，是接口</li>
+<li>JavaWeb三大组件之一，分别是 Servlet 、Filter、Listener</li>
+<li>是运行在服务器上的 Java 小程序，可以接收客户端发送过来的请求，并相应数据给客户端</li>
+</ul>
+<h2 id="implement-Servlet"><a href="#implement-Servlet" class="headerlink" title="implement Servlet"></a>implement Servlet</h2><p>servlet 是运行在服务器上的小程序，是一个接口，那需要一个实现类去实现 servlet 并调用其服务，获取请求并回应。</p>
+<ol>
+<li>创建一个 servlet 接口的实现类</li>
+<li>调用最主要的 .service 方法，用于处理请求并回应</li>
+<li>在 web.xml 中配置 servlet 的访问路径</li>
+</ol>
+<h3 id="web-xml-配置"><a href="#web-xml-配置" class="headerlink" title="web.xml 配置"></a>web.xml 配置</h3><p>在实现了一个 HiServlet 类并重写了 .service 方法后在 web.xml 中添加如下字段形成一个 mapping 匹配了改实现类和访问网页的关系</p>
+<pre><code>&lt;!-- servlet标签给tomcat配置servlet程序 --&gt;
+&lt;servlet&gt;
+    &lt;!-- 给servlet程序起别名 一般是类名 --&gt;
+    &lt;servlet-name&gt;HiServlet&lt;/servlet-name&gt;
+    &lt;!-- 是servlet的全类名 --&gt;
+    &lt;servlet-class&gt;com.virgonia.web.HiServlet&lt;/servlet-class&gt;
+&lt;/servlet&gt;
+&lt;!-- 给servlet程序配置访问地址 --&gt;
+&lt;servlet-mapping&gt;
+    &lt;!-- 告诉服务器 当前配置的地址是给哪个servlet程序使用 --&gt;
+    &lt;servlet-name&gt;HiServlet&lt;/servlet-name&gt;
+    &lt;!-- 配置访问地址
+    / 表示了当前工程路径 即 http://ip/port/工程/
+    /hello就表示http://ip/port/工程/hello
+    地址可以自定义 主要是让服务器联系到地址 并匹配到一个servlet响应请求并回应
+    --&gt;
+    &lt;url-pattern&gt;/hello&lt;/url-pattern&gt;
+&lt;/servlet-mapping&gt;
+</code></pre>
+<h2 id="Servlet-生命周期"><a href="#Servlet-生命周期" class="headerlink" title="Servlet 生命周期"></a>Servlet 生命周期</h2><p>在 servlet 实现类中，重写了几个方法，并且 class 默认创建 .this() 构造器，也可以重写</p>
+<ol>
+<li><p>执行 Servlet 构造器</p>
+</li>
+<li><p>执行 init 初始化方法</p>
+<pre><code> 1、2步在第一次访问 /hello 时调用的
+</code></pre>
+</li>
+<li><p>执行 service 方法</p>
+<pre><code> 每一次访问 /hello 都会调用 比如刷新
+</code></pre>
+</li>
+<li><p>执行 destroy 方法</p>
+<pre><code> 在 web 工程停止时调用 释放内存用的
+</code></pre>
+</li>
+</ol>
+<h2 id="service-方法-if-get-or-post"><a href="#service-方法-if-get-or-post" class="headerlink" title="service 方法-if get or post"></a>service 方法-if get or post</h2><p>常作为 html 页面中 action 的属性值匹配的动作，调用的方法有 post 或 get 。在 Java 中，为了能够区分是哪种方式，需要对传入的 ServletRequest 参数做判断。其子类实现类可以用 .getMethod() 方法返回 String 获取到 action 中调用的方法。</p>
+<p>在 servlet 实现类中重写中添加判断</p>
+<pre><code>    //转化为子类
+HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
+    //用getMethod方法获取action动作
+String method = httpServletRequest.getMethod();
+    //处理
+if (&quot;GET&quot;.equals(method))&#123;
+    System.out.println(&quot;对GET表单的处理&quot;);
+&#125; else if (&quot;POST&quot;.equals(method))&#123;
+    System.out.println(&quot;对POST表单的处理&quot;);
+&#125;
+</code></pre>
+<p>可以将 doGet 和 doPost 方法封装起来</p>
+<h2 id="用-Servlet-的继承子类实现类"><a href="#用-Servlet-的继承子类实现类" class="headerlink" title="用 Servlet 的继承子类实现类"></a>用 Servlet 的继承子类实现类</h2><h3 id="HttpServlet"><a href="#HttpServlet" class="headerlink" title="HttpServlet"></a>HttpServlet</h3><pre><code>1. 创建一个 servlet 接口的实现类
+2. 调用最主要的 .service 方法，用于处理请求并回应
+3. 在 web.xml 中配置 servlet 的访问路径
+</code></pre>
+<p>以上是调用 Servlet 实现类时所做的事情，而 Servlet 类作为一个规范的接口，仅仅规范了访问 Servlet 必要事件，即不能很好的完成请求响应的工作，那去实现 Servlet 的继承子类可以提高效率。</p>
+<p>步骤修改为</p>
+<pre><code>1. 编写一个类去继承 HttpServlet 类
+2. 根据业务需要重写 doGet 或 doPost 方法
+3. 到 web.xml 中的配置 Servlet 程序的访问地址
+</code></pre>
+<p>直接重写实现类中的 doGet 和 doPost 方法即可， HttpServle t类已经区分好了</p>
+<p>在idea中可以快速的生成 servlet 继承子类的实现类，同时配置好.xml配置服务器内容，手动添加访问地址即可</p>
+<h3 id="ServletConfig"><a href="#ServletConfig" class="headerlink" title="ServletConfig"></a>ServletConfig</h3><p>是 servlet 程序的配置信息，每次由Tomcat创建，用户使用，Tomcat 创立后就是</p>
+<ol>
+<li>可以获取 Servlet 程序的别名 servlet-name 的值</li>
+<li>获取初始化参数 init-param</li>
+<li>获取 ServletContext 对象</li>
+</ol>
+<p>获取了web.xml中信息，包在 <code>&lt;servlet&gt;  &lt;/servlet&gt;</code> 中的信息，如init-param 像键值对，通过通过 name 获取 value </p>
+<pre><code>.xml
+&lt;init-param&gt;
+&lt;!--是参数名--&gt;
+&lt;param-name&gt;username&lt;/param-name&gt;
+&lt;!--是参数值--&gt;
+&lt;param-value&gt;root&lt;/param-value&gt;
+&lt;/init-param&gt;
+
+.class
+public void init(ServletConfig config) throws     ServletException &#123;
+    super.init(config);//重写必须加上父类的构造器
+    //获取config或param对象
+&#125;
+</code></pre>
+<h3 id="ServletContext"><a href="#ServletContext" class="headerlink" title="ServletContext"></a>ServletContext</h3><ul>
+<li>是个接口，表示servlet的上下文对象，上下文表示整个工程都能访问的</li>
+<li>是个单例</li>
+<li>对象是个域对象</li>
+<li>在web部署启动时创建，停止时销毁</li>
+<li>记住Attribute </li>
+<li>存数据setAttribute()、取数据getAttribute()、删数据removeAttribute()  操作像Map</li>
+</ul>
+<h4 id="作用"><a href="#作用" class="headerlink" title="作用"></a>作用</h4><ol>
+<li><p>获取.xml中的context-param</p>
+</li>
+<li><p>获得工程路径</p>
+</li>
+<li><p>获得绝对路径</p>
+</li>
+<li><p>key-value一样的存取数据</p>
+<pre><code> .xml
+ &lt;context-param&gt;
+ &lt;param-name&gt;name&lt;/param-name&gt;
+ &lt;param-value&gt;value&lt;/param-value&gt;
+ &lt;/context-param&gt;
+ 
+ .class
+ //ServletContext context = getServletConfig().getServletContext();//皆可
+ ServletContext context = getServletContext();
+ //获取context-param参数
+
+ String username = context.getInitParameter(&quot;name&quot;);//value
+ System.out.println( &quot;当前工程路径:&quot; + context.getContextPath() );
+ System.out.println(&quot;工程部署的路径是:&quot; + context.getRealPath(&quot;/&quot;));
+ System.out.println(&quot;工程下 css 目录的绝对路径是:&quot; + context.getRealPath(&quot;/css&quot;));
+</code></pre>
+</li>
+</ol>
+<p>所谓的上下文就是整个工程文件中所设置的context-param是共享一片数据，不像ServletConfig中，只能取到当前servlet的init-param值</p>
+<p>主要记住一个事情，拿不到的值，要么就是因为它是局部的param，要么就是因为没加载就取值，更然而是路径找错了</p>
+<h3 id="HttpServletRequest"><a href="#HttpServletRequest" class="headerlink" title="HttpServletRequest"></a>HttpServletRequest</h3><p>见名知意，作为 httpservlet 的请求响应，由客户端发来的</p>
+<p>在 servlet 的 doGet 和 doPost 的形参中出现，也就是在客户端通过 action 的动作，交由服务器处理的请求响应，得到的 request 是 Tomcat 解析 Http 后得到的请求</p>
+<h4 id="常用方法"><a href="#常用方法" class="headerlink" title="常用方法"></a>常用方法</h4><ul>
+<li><p>getRequestURI() 请求的资源路径</p>
+</li>
+<li><p>getRequestURL() 请求的统一资源定位符（绝对路径）</p>
+</li>
+<li><p>getRemoteHost() 客户端的 ip 地址</p>
+</li>
+<li><p>getHeader() 获取请求头</p>
+</li>
+<li><p>getParameter() 获取请求的参数</p>
+</li>
+<li><p>getParameterValues() 获取请求的参数（多个值的时候使用）</p>
+</li>
+<li><p>getMethod() 获取请求的方式 GET 或 POST</p>
+</li>
+<li><p>setAttribute(key, value) 设置域数据</p>
+</li>
+<li><p>getAttribute(key) 获取域数据</p>
+</li>
+<li><p>getRequestDispatcher() 获取请求转发对象</p>
+<pre><code>  在 IDEA 中，
+  使用 localhost 访问时，得到的客户端 ip 地址是 ===&gt;&gt;&gt; 127.0.0.1&lt;br/&gt;
+   使用 127.0.0.1 访问时，得到的客户端 ip 地址是 ===&gt;&gt;&gt; 127.0.0.1&lt;br/&gt;
+  使用 真实 ip 访问时，得到的客户端 ip 地址是 ===&gt;&gt;&gt; 真实的客户端 ip 地址&lt;br/&gt;
+</code></pre>
+</li>
+</ul>
+<p>doGet 乱码时，是因为编译和解码时的编码集不一致，Tomcat下其编码集是 iso-8859-1 ，不支持中文，需要先解码再重新用 utf-8 编码</p>
+<pre><code>String(param.getBytes(&quot;iso-8859-1&quot;), &quot;UTF-8&quot;);
+//param是通过request取得的param值的变量
+</code></pre>
+<p>doPost 乱码时，由于是通过表单获得的，直接编码即可</p>
+<pre><code>req.setCharacterEncoding(&quot;UTF-8&quot;)
+</code></pre>
+<p>设置编码要先设置 再操作request</p>
+<h3 id="HttpServletResponse"><a href="#HttpServletResponse" class="headerlink" title="HttpServletResponse"></a>HttpServletResponse</h3><p>每次请求进来，Tomcat 服务器都会创建一个 Response 对象传递给 Servlet 程序去使用。HttpServletRequest 表示请求过来的信息，HttpServletResponse 表示所有响应的信息，返回客户端信息</p>
+<p>输出的只能是字节流或字符流的其中之一</p>
+<ul>
+<li>getOutputStream() 常用于下载、传递二进制数据</li>
+<li>getWriter() 常用于回传字符串，常用</li>
+</ul>
+<p>如果在页面上显示乱码，则在获取流对象前，先在响应头中声明响应类型是utf-8</p>
+<pre><code>resp.setContentType(&quot;text/html; charset=UTF-8&quot;);
+</code></pre>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/servlet/" rel="tag"># servlet</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/06/21/Java-%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/" rel="prev" title="Java-面向对象">
+                  <i class="fa fa-chevron-left"></i> Java-面向对象
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/07/02/Java-%E6%A6%82%E8%BF%B0/" rel="next" title="Java-概述">
+                  Java-概述 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Virogoniagee</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
