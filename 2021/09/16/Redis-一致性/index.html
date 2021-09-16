@@ -23,23 +23,21 @@
     var NexT = window.NexT || {};
     var CONFIG = {"hostname":"example.com","root":"/","images":"/images","scheme":"Pisces","version":"8.3.0","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
   </script>
-<meta name="description" content="hexo环境部署、初始化到让别人能看到你的blog">
+<meta name="description" content="一致性的理解，Redis如何降低一致性风险。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="hexo安装和部署">
-<meta property="og:url" content="http://example.com/2021/04/08/hexo%E5%AE%89%E8%A3%85%E5%92%8C%E9%83%A8%E7%BD%B2/index.html">
+<meta property="og:title" content="Redis-一致性">
+<meta property="og:url" content="http://example.com/2021/09/16/Redis-%E4%B8%80%E8%87%B4%E6%80%A7/index.html">
 <meta property="og:site_name" content="Virgoniagee&#39;s blog">
-<meta property="og:description" content="hexo环境部署、初始化到让别人能看到你的blog">
+<meta property="og:description" content="一致性的理解，Redis如何降低一致性风险。">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2021-04-08T10:50:14.000Z">
-<meta property="article:modified_time" content="2021-09-16T06:40:02.521Z">
+<meta property="article:published_time" content="2021-09-16T06:40:39.000Z">
+<meta property="article:modified_time" content="2021-09-16T17:20:12.404Z">
 <meta property="article:author" content="Virogoniagee">
-<meta property="article:tag" content="hexo">
-<meta property="article:tag" content="git">
-<meta property="article:tag" content="node.js">
+<meta property="article:tag" content="Redis">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="http://example.com/2021/04/08/hexo%E5%AE%89%E8%A3%85%E5%92%8C%E9%83%A8%E7%BD%B2/">
+<link rel="canonical" href="http://example.com/2021/09/16/Redis-%E4%B8%80%E8%87%B4%E6%80%A7/">
 
 
 <script class="page-configurations">
@@ -51,7 +49,7 @@
     lang   : 'zh-CN'
   };
 </script>
-<title>hexo安装和部署 | Virgoniagee's blog</title>
+<title>Redis-一致性 | Virgoniagee's blog</title>
   
 
 
@@ -161,7 +159,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFhexo"><span class="nav-number">1.</span> <span class="nav-text">什么是hexo</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%A0%E9%9C%80%E8%A6%81%E5%95%A5%E5%AD%90%E5%87%86%E5%A4%87"><span class="nav-number">2.</span> <span class="nav-text">你需要啥子准备</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE"><span class="nav-number">3.</span> <span class="nav-text">环境配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hexo%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="nav-number">4.</span> <span class="nav-text">Hexo初始化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hexo%E6%93%8D%E4%BD%9C%E5%92%8C%E9%83%A8%E7%BD%B2"><span class="nav-number">5.</span> <span class="nav-text">Hexo操作和部署</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%AA%E6%80%A7%E5%8C%96%E8%AE%BE%E7%BD%AE"><span class="nav-number">6.</span> <span class="nav-text">个性化设置</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E8%87%B4%E6%80%A7%E9%97%AE%E9%A2%98"><span class="nav-number">1.</span> <span class="nav-text">一致性问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%99%E5%9C%A8%E5%89%8D%E9%9D%A2"><span class="nav-number">1.1.</span> <span class="nav-text">写在前面</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E4%BA%A7%E7%94%9F%E7%9A%84"><span class="nav-number">1.2.</span> <span class="nav-text">如何产生的</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%84%E7%90%86Redis%E4%B8%80%E8%87%B4%E6%80%A7%E9%97%AE%E9%A2%98"><span class="nav-number">2.</span> <span class="nav-text">处理Redis一致性问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%8C%E6%9B%B4%E6%96%B0%E6%A8%A1%E5%BC%8F"><span class="nav-number">2.1.</span> <span class="nav-text">双更新模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%8E%E5%88%A0%E7%BC%93%E5%AD%98"><span class="nav-number">2.2.</span> <span class="nav-text">后删缓存</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AF%BB"><span class="nav-number">2.2.1.</span> <span class="nav-text">读</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%86%99"><span class="nav-number">2.2.2.</span> <span class="nav-text">写</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BB%B6%E6%97%B6%E5%8F%8C%E5%88%A0"><span class="nav-number">2.3.</span> <span class="nav-text">延时双删</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%98%93%E7%BC%93%E5%AD%98%E5%87%BB%E7%A9%BF"><span class="nav-number">2.4.</span> <span class="nav-text">易缓存击穿</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AF%BB%E6%93%8D%E4%BD%9C%E4%BA%92%E6%96%A5"><span class="nav-number">2.4.1.</span> <span class="nav-text">读操作互斥</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9B%B4%E6%96%B0%E9%9B%86%E4%B8%AD"><span class="nav-number">2.4.2.</span> <span class="nav-text">更新集中</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BC%B1%E5%8C%96%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="nav-number">2.4.3.</span> <span class="nav-text">弱化数据库</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -237,7 +235,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/04/08/hexo%E5%AE%89%E8%A3%85%E5%92%8C%E9%83%A8%E7%BD%B2/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/09/16/Redis-%E4%B8%80%E8%87%B4%E6%80%A7/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -250,7 +248,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          hexo安装和部署
+          Redis-一致性
         </h1>
 
         <div class="post-meta-container">
@@ -261,14 +259,14 @@
       </span>
       <span class="post-meta-item-text">发表于</span>
 
-      <time title="创建时间：2021-04-08 18:50:14" itemprop="dateCreated datePublished" datetime="2021-04-08T18:50:14+08:00">2021-04-08</time>
+      <time title="创建时间：2021-09-16 14:40:39" itemprop="dateCreated datePublished" datetime="2021-09-16T14:40:39+08:00">2021-09-16</time>
     </span>
       <span class="post-meta-item">
         <span class="post-meta-item-icon">
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2021-09-16 14:40:02" itemprop="dateModified" datetime="2021-09-16T14:40:02+08:00">2021-09-16</time>
+        <time title="修改时间：2021-09-17 01:20:12" itemprop="dateModified" datetime="2021-09-17T01:20:12+08:00">2021-09-17</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -276,14 +274,14 @@
       </span>
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/hexo/" itemprop="url" rel="index"><span itemprop="name">hexo</span></a>
+          <a href="/categories/%E4%B8%80%E8%87%B4%E6%80%A7/" itemprop="url" rel="index"><span itemprop="name">一致性</span></a>
         </span>
     </span>
 
   
 </div>
 
-            <div class="post-description">hexo环境部署、初始化到让别人能看到你的blog</div>
+            <div class="post-description">一致性的理解，Redis如何降低一致性风险。</div>
         </div>
       </header>
 
@@ -291,66 +289,67 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h2 id="什么是hexo"><a href="#什么是hexo" class="headerlink" title="什么是hexo"></a>什么是hexo</h2><p>hexo是一个基于node.js的静态博客，作者是个台湾人，对中文使用人很友好，官方的文档非常全面，更新勤快！夸一口。</p>
-<h2 id="你需要啥子准备"><a href="#你需要啥子准备" class="headerlink" title="你需要啥子准备"></a>你需要啥子准备</h2><ul>
-<li>一个Github账号</li>
+        <h2 id="一致性问题"><a href="#一致性问题" class="headerlink" title="一致性问题"></a>一致性问题</h2><h3 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h3><p>首先需要明确一点：一致性问题不能解决，只能说降低发生一致性问题的概率，所使用的策略不是一招鲜，需要根据需求，用户访问量，访问的数据性质等来判断，选择使用什么策略。</p>
+<h3 id="如何产生的"><a href="#如何产生的" class="headerlink" title="如何产生的"></a>如何产生的</h3><ul>
+<li>讨论一个单机应用，服务器内只是用一个数据库来实现数据存储，所有的CRUD都通过这一个数据库，那还会存在一致性问题吗？答案是no。</li>
+<li>一致性问题只会产生在 <code>服务器-缓存（redis）-数据库（mySQL）</code> 这样的结构中，表现为同一时刻，缓存和数据库内的读到的数据不同。</li>
 </ul>
-<p>hexo框架是放在Github上的，一个GitHub账号可以方便的扒拉hexo框架和其他学习资料下来。</p>
-<p>记得取一个你喜欢的账户名，若是放在GitHub上托管，那么你的博客名就是你的用户名，但是也不必担心，可以改。</p>
-<p><a target="_blank" rel="noopener" href="https://github.com/">https://github.com/</a></p>
+<h2 id="处理Redis一致性问题"><a href="#处理Redis一致性问题" class="headerlink" title="处理Redis一致性问题"></a>处理Redis一致性问题</h2><p>常见的redis封装类有jedis、redission、lettuce</p>
+<p>spring-cache  –AOP  使用lettuce</p>
 <ul>
-<li>git</li>
+<li>启动类加上@EnableCaching注解</li>
+<li>使用CacheManager初始化要使用的缓存框架，使用@CacheConfig注解注入要使用的资源</li>
+<li>@Cacheable-资源缓存击中、@CachePut-资源缓存、@CacheEvict-缓存清除</li>
+<li>CRUD<ul>
+<li>getFromDB</li>
+<li>getFromREdis</li>
+<li>putToDB</li>
+<li>putToRedis</li>
+<li>deleteFromDB</li>
+<li>deleteFromRedis</li>
 </ul>
-<p>代码版本管理器，一开始分不清楚git和GitHub之间的关系，git帮助你回退到任何一个项目的历史版本，而GitHub中放的是你的项目代码。</p>
-<p>换个话说，git可以配合别的代码管理器使用，比如gitee。</p>
-<p>GitHub看成是一个只放代码相关的网盘</p>
-<p>在git的使用过程中，配合git的官方文档食用更佳，官方有中文文档。</p>
-<p>一定要记得！！！下载最新的版本，否则你在部署到GitHub上会出错，叫logon faild，更新一下就好了</p>
-<pre><code>$git update-git-for-windows
-</code></pre>
-<p><a target="_blank" rel="noopener" href="http://git-scm.com/">http://git-scm.com/</a></p>
+</li>
+</ul>
+<p><code>redis--数据库</code> 可以类比为计算机结构中的 <code>内存--HHD+SSD</code> redis具有10wQPS，DB远低于此。</p>
+<p>当对DB和Redis的操作异步进行时，由于Redis更快，无论是先结束还是后结束，都会导致一致性问题。</p>
+<h3 id="双更新模式"><a href="#双更新模式" class="headerlink" title="双更新模式"></a>双更新模式</h3><p>操作不合理，导致数据一致性问题。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">putValue</span><span class="params">(key,value)</span></span>&#123;</span><br><span class="line"></span><br><span class="line">    putToRedis(key,value);</span><br><span class="line"></span><br><span class="line">    putToDB(key,value);<span class="comment">//操作失败了</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>redis没有事务，DB有事务，redis实现更新后，DB操作失败进行回滚，那么redis和DB会数据不一致。</p>
+<p>即使先put到DB再put到redis，由于redis、DB非原子，DB相对较慢，并且处在高并发的场景，若多个操作都需要put，这里需要明确的是，理想情况下，在同一操作下，希望在操作中，DB和redis数据一致。</p>
+<p>是由于业务不合理造成的不一致</p>
+<h3 id="后删缓存"><a href="#后删缓存" class="headerlink" title="后删缓存"></a>后删缓存</h3><p>把双更新中，redis的put改为delete即可，取不到值，则击穿到数据库。</p>
+<p>那么是先删还是后删呢</p>
 <ul>
-<li>node.js</li>
+<li>先删：同样一个操作，先deleteFromRedis，再putToDB，在delete时，读取该key，则未put到DB中，不论delete是否完成，读取到的都是旧值</li>
+<li>后删：先putToDB，再deleteFromRedis，在put时，若来读取，大概率会读到旧值，put完成后，由于对redis的操作更快，那读取操作会击穿到数据库读到新值，保证在更大概率下读取的是新值</li>
 </ul>
-<p>直接在官网下载就好了，hexo主要是基于node.js的静态网页来搭建的，node.js继承了npm指令，一些hexo的组件，需要通过npm指令来下载。</p>
-<p><a target="_blank" rel="noopener" href="http://nodejs.cn/">http://nodejs.cn/</a></p>
-<h2 id="环境配置"><a href="#环境配置" class="headerlink" title="环境配置"></a>环境配置</h2><ul>
-<li>先查看一下版本</li>
+<p>通常所说的Cache-Aside Pattern</p>
+<h4 id="读"><a href="#读" class="headerlink" title="读"></a>读</h4><ul>
+<li>每次读取数据，都从Cache取<ul>
+<li>读不到cache，从db取，为cache miss</li>
+<li>读到了，则返回cache中的值，为cache hit</li>
 </ul>
-<p>打开cmd</p>
-<pre><code>node -v
-npm -v
-npm config set prefix “F:\nodejs\node_global”   //配置全局模块存放路径
-npm config set cache “F:\nodejs\node_cache”   //cache路径
-</code></pre>
+</li>
+<li>将读到的数据放到cache，下次cache hit</li>
+</ul>
+<h4 id="写"><a href="#写" class="headerlink" title="写"></a>写</h4><ul>
+<li>将变更写到db</li>
+<li>删除cache中的对应key数据</li>
+</ul>
+<p>Spring Cache默认实现该模式</p>
+<h3 id="延时双删"><a href="#延时双删" class="headerlink" title="延时双删"></a>延时双删</h3><p>在高并发场景下，可能导致下一次的读操作发生在deleteFromRedis之前，则会出现不一致</p>
+<p>解决思路为确保delete操作一定会执行，所以采用延时双删，其发生时机有</p>
 <ul>
-<li>环境变量</li>
+<li>内存的延时队列里，随JVM进程宕机丢失更新的风险</li>
+<li>MQ，编码复杂</li>
+<li>闪电缓存，超高并发下，发生缓存击穿</li>
 </ul>
-<p>需要在nodejs安装路径下添加node_cache、node_global—-node_modules，由npm加载的文件将放到node_modules中。</p>
-<p>用户变量：Path中添加~~\nodejs\node_global </p>
-<p>系统变量：新建NODE_PATH 值为~~\nodejs\node_global\node_modules</p>
-<p>系统变量：Path中添加nodejs的路径、node_cache的路径、Git安装路径下的Git\cmd（git安装时勾选path将自行创建）</p>
-<h2 id="Hexo初始化"><a href="#Hexo初始化" class="headerlink" title="Hexo初始化"></a>Hexo初始化</h2><p>在你希望放置blog的位置下右键打开git bash</p>
-<pre><code>hexo--cmd--npm install -g hexo -cli
-hexo init &lt;你的blog文件夹名&gt;
-cd &lt;你的blog文件夹名&gt;
-npm install
-</code></pre>
-<p>然后你就会发现在blog文件夹下已经自动在本地组件好了hexo架构</p>
-<h2 id="Hexo操作和部署"><a href="#Hexo操作和部署" class="headerlink" title="Hexo操作和部署"></a>Hexo操作和部署</h2><ul>
-<li>hexo g  ———把本地的代码部署到本地服务器</li>
-<li>hexo s  ———打开本地服务器</li>
-<li>hexo d  ———将本地代码部署到GitHub上</li>
-</ul>
-<p>要想部署到GitHub上，你需要在自己的GitHub上创建你的代码仓库，以自己的用户名为仓库名，部署后可以以仓库名.github.io拜访blog。</p>
-<p>在部署之前，需要设置本地的git全局用户名和邮箱</p>
-<pre><code>git config --global user.name &quot;你的用户名&quot;
-git config --global user.email &quot;你的邮箱&quot;
-</code></pre>
-<p>全都部署好后执行hexo d，如果出错代码为443</p>
-<pre><code>git config --global --unset http.proxy
-</code></pre>
-<h2 id="个性化设置"><a href="#个性化设置" class="headerlink" title="个性化设置"></a>个性化设置</h2><p>打开hexo的官网下载大佬们布置好的theme，还有添加一些字数统计、评论、代码高亮等等的设置和插件，详情请google和查看官网<br><a target="_blank" rel="noopener" href="https://hexo.io/">https://hexo.io/</a></p>
+<h3 id="易缓存击穿"><a href="#易缓存击穿" class="headerlink" title="易缓存击穿"></a>易缓存击穿</h3><p>任何删除缓存的动作，都有可能造成缓存击穿，在极高的并发下，不能随便删cache</p>
+<h4 id="读操作互斥"><a href="#读操作互斥" class="headerlink" title="读操作互斥"></a>读操作互斥</h4><p>使用锁or分布式锁控制</p>
+<h4 id="更新集中"><a href="#更新集中" class="headerlink" title="更新集中"></a>更新集中</h4><p>采用定时或binlog方式同步更新</p>
+<h4 id="弱化数据库"><a href="#弱化数据库" class="headerlink" title="弱化数据库"></a>弱化数据库</h4><p>将redis作为落地存储，db作为备份，定时备份到db</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>一致性问题不能彻底解决，只能根据实际的业务场景选择对应的方案，在高并发的场景下，条件更为苛刻，应先考虑维持服务，即避免缓存击穿等问题，可以容忍部分的不一致情景，一切从需求出发</p>
 
     </div>
 
@@ -360,20 +359,18 @@ git config --global user.email &quot;你的邮箱&quot;
 
     <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/hexo/" rel="tag"># hexo</a>
-              <a href="/tags/git/" rel="tag"># git</a>
-              <a href="/tags/node-js/" rel="tag"># node.js</a>
+              <a href="/tags/Redis/" rel="tag"># Redis</a>
           </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-item">
+                <a href="/2021/09/09/hexo-%E8%BF%81%E7%A7%BB/" rel="prev" title="hexo-迁移">
+                  <i class="fa fa-chevron-left"></i> hexo-迁移
+                </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2021/04/13/Spring-boot/" rel="next" title="Spring boot#">
-                  Spring boot# <i class="fa fa-chevron-right"></i>
-                </a>
             </div>
           </div>
     </footer>
