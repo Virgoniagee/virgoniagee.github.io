@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","images":"/images","scheme":"Pisces","version":"8.3.0","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="类的成分、三大特性、关键字">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java-面向对象">
+<meta property="og:url" content="http://example.com/2021/06/21/Java-%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/index.html">
+<meta property="og:site_name" content="Virgoniagee&#39;s blog">
+<meta property="og:description" content="类的成分、三大特性、关键字">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-06-21T15:13:05.000Z">
+<meta property="article:modified_time" content="2021-07-01T18:51:50.529Z">
+<meta property="article:author" content="Virogoniagee">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="面向对象">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2021/06/21/Java-%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>Java-面向对象 | Virgoniagee's blog</title>
+  
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Virgoniagee's blog</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%B1%BB%E5%8F%8A%E7%B1%BB%E7%9A%84%E6%88%90%E5%91%98"><span class="nav-number">1.</span> <span class="nav-text">类及类的成员</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B1%9E%E6%80%A7"><span class="nav-number">1.1.</span> <span class="nav-text">属性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B1%9E%E6%80%A7vs%E5%B1%80%E9%83%A8%E5%8F%98%E9%87%8F"><span class="nav-number">1.1.1.</span> <span class="nav-text">属性vs局部变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B5%8B%E5%80%BC%E9%A1%BA%E5%BA%8F"><span class="nav-number">1.1.2.</span> <span class="nav-text">赋值顺序</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B9%E6%B3%95"><span class="nav-number">1.2.</span> <span class="nav-text">方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%E7%BB%93%E6%9E%84"><span class="nav-number">1.2.1.</span> <span class="nav-text">方法结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%E9%87%8D%E8%BD%BD"><span class="nav-number">1.2.2.</span> <span class="nav-text">方法重载</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BD%A2%E5%8F%82"><span class="nav-number">1.2.3.</span> <span class="nav-text">形参</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%80%BC%E4%BC%A0%E9%80%92"><span class="nav-number">1.2.4.</span> <span class="nav-text">值传递</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%92%E5%BD%92"><span class="nav-number">1.2.5.</span> <span class="nav-text">递归</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9E%84%E9%80%A0%E5%99%A8"><span class="nav-number">1.3.</span> <span class="nav-text">构造器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Constructor"><span class="nav-number">1.3.1.</span> <span class="nav-text">Constructor</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JavaBean"><span class="nav-number">1.3.2.</span> <span class="nav-text">JavaBean</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E5%9D%97"><span class="nav-number">1.4.</span> <span class="nav-text">代码块</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%85%E9%83%A8%E7%B1%BB"><span class="nav-number">1.5.</span> <span class="nav-text">内部类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Object"><span class="nav-number">1.6.</span> <span class="nav-text">Object</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#java-lang-Object"><span class="nav-number">1.6.1.</span> <span class="nav-text">java.lang.Object</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#equals"><span class="nav-number">1.6.2.</span> <span class="nav-text">.equals()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#getClass"><span class="nav-number">1.6.3.</span> <span class="nav-text">.getClass()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hashCode"><span class="nav-number">1.6.4.</span> <span class="nav-text">.hashCode()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#toString-NaN"><span class="nav-number">1.6.5.</span> <span class="nav-text">.toString()</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%89%E5%A4%A7%E7%89%B9%E6%80%A7"><span class="nav-number">2.</span> <span class="nav-text">三大特性</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%81%E8%A3%85"><span class="nav-number">2.1.</span> <span class="nav-text">封装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%A7%E6%89%BF"><span class="nav-number">2.2.</span> <span class="nav-text">继承</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%BC%E5%BC%8F"><span class="nav-number">2.2.1.</span> <span class="nav-text">格式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%89%B9%E7%82%B9"><span class="nav-number">2.2.2.</span> <span class="nav-text">特点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#subclass"><span class="nav-number">2.2.3.</span> <span class="nav-text">subclass</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%B4%E6%98%8E"><span class="nav-number">2.2.4.</span> <span class="nav-text">说明</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%87%8D%E5%86%99"><span class="nav-number">2.2.5.</span> <span class="nav-text">重写</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%9A%E6%80%81"><span class="nav-number">2.3.</span> <span class="nav-text">多态</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%99%9A%E6%8B%9F%E8%B0%83%E7%94%A8"><span class="nav-number">2.3.1.</span> <span class="nav-text">虚拟调用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%89%8D%E6%8F%90"><span class="nav-number">2.3.2.</span> <span class="nav-text">前提</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9D%9E%E5%A4%9A%E6%80%81-%E5%90%91%E4%B8%8B%E8%BD%AC%E5%9E%8B"><span class="nav-number">2.3.3.</span> <span class="nav-text">非多态 向下转型</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%B3%E9%94%AE%E5%AD%97"><span class="nav-number">3.</span> <span class="nav-text">关键字</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#static"><span class="nav-number">3.1.</span> <span class="nav-text">static</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B1%9E%E6%80%A7-1"><span class="nav-number">3.1.1.</span> <span class="nav-text">属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%B3%95-1"><span class="nav-number">3.1.2.</span> <span class="nav-text">方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E5%9D%97-1"><span class="nav-number">3.1.3.</span> <span class="nav-text">代码块</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%85%E9%83%A8%E7%B1%BB-1"><span class="nav-number">3.1.4.</span> <span class="nav-text">内部类</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#final"><span class="nav-number">3.2.</span> <span class="nav-text">final</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B1%BB"><span class="nav-number">3.2.1.</span> <span class="nav-text">类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%B3%95-2"><span class="nav-number">3.2.2.</span> <span class="nav-text">方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%98%E9%87%8F"><span class="nav-number">3.2.3.</span> <span class="nav-text">变量</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#abstract"><span class="nav-number">3.3.</span> <span class="nav-text">abstract</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B1%BB-1"><span class="nav-number">3.3.1.</span> <span class="nav-text">类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%B3%95-3"><span class="nav-number">3.3.2.</span> <span class="nav-text">方法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#interface"><span class="nav-number">3.4.</span> <span class="nav-text">interface</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#return"><span class="nav-number">3.5.</span> <span class="nav-text">return</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#package-import"><span class="nav-number">3.6.</span> <span class="nav-text">package&#x2F;import</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#MVC"><span class="nav-number">3.6.1.</span> <span class="nav-text">MVC</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JDK"><span class="nav-number">3.6.2.</span> <span class="nav-text">JDK</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#package"><span class="nav-number">3.6.3.</span> <span class="nav-text">package</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#import"><span class="nav-number">3.6.4.</span> <span class="nav-text">import</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Virogoniagee"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Virogoniagee</p>
+  <div class="site-description" itemprop="description">be 😎. be 🐱</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">31</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Virgoniagee" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Virgoniagee" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:sherleypeetzo@gmail.com" title="E-Mail → mailto:sherleypeetzo@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/06/21/Java-%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Virogoniagee">
+      <meta itemprop="description" content="be 😎. be 🐱">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Virgoniagee's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Java-面向对象
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-06-21 23:13:05" itemprop="dateCreated datePublished" datetime="2021-06-21T23:13:05+08:00">2021-06-21</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-07-02 02:51:50" itemprop="dateModified" datetime="2021-07-02T02:51:50+08:00">2021-07-02</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+            <div class="post-description">类的成分、三大特性、关键字</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="类及类的成员"><a href="#类及类的成员" class="headerlink" title="类及类的成员"></a>类及类的成员</h1><h2 id="属性"><a href="#属性" class="headerlink" title="属性"></a>属性</h2><h3 id="属性vs局部变量"><a href="#属性vs局部变量" class="headerlink" title="属性vs局部变量"></a>属性vs局部变量</h3><ul>
+<li><p>相同点：</p>
+<ol>
+<li>定义格式</li>
+<li>先声明再使用</li>
+<li>作用域内生效</li>
+</ol>
+</li>
+<li><p>不同点：</p>
+<ol>
+<li><p>声明位置：</p>
+<p> 属性：class{ }内<br> 局部变量：方法内、方法形参、代码块内、构造器形参、构造器内部</p>
+</li>
+<li><p>修饰权限：</p>
+<p> 属性：声明时指明权限，常用的权限修饰符：private、public、缺省、protected  -&gt;封装性<br> 局部变量：不能用</p>
+</li>
+<li><p>初始化：</p>
+<p> 属性：定义后自动初始化为类型默认值<br> 局部变量：需要声明，使用必须显示赋值，手动的</p>
+</li>
+<li><p>内存加载位置：</p>
+<p> 属性：非static在堆空间<br> 局部变量：在栈空间</p>
+</li>
+</ol>
+</li>
+</ul>
+<h3 id="赋值顺序"><a href="#赋值顺序" class="headerlink" title="赋值顺序"></a>赋值顺序</h3><ol>
+<li>默认初始化</li>
+<li>显示初始化/代码块中赋值(看先后顺序)</li>
+<li>构造器中初始化</li>
+<li>通过”对象.方法” 或 “对象.属性”的方式</li>
+</ol>
+<h2 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h2><h3 id="方法结构"><a href="#方法结构" class="headerlink" title="方法结构"></a>方法结构</h3><pre><code>修饰符 返回值 方法名(形参)&#123;
+方法体;
+//return 返回值&#125;
+</code></pre>
+<h3 id="方法重载"><a href="#方法重载" class="headerlink" title="方法重载"></a>方法重载</h3><ul>
+<li>在同一个类中，允许存在一个以上的同名方法，只要它们的参数个数或者参数类型不同即可</li>
+<li>两同一不同：同类、方法名****不同参数列表、个数、类型</li>
+</ul>
+<h3 id="形参"><a href="#形参" class="headerlink" title="形参"></a>形参</h3><p>在方法结构中作为参数传入的局部变量，因为是由“外部”传入的参数，不需要显式声明，但是作用于方法内部，是否会对原本传入的参数有所改变要看什么类型，分析其内存位置。</p>
+<p>Java的形参是值传递，但是不分为基本数据类型和引用数据类型，String是例外。</p>
+<h3 id="值传递"><a href="#值传递" class="headerlink" title="值传递"></a>值传递</h3><p>Java中参数传递机制：值传递</p>
+<ul>
+<li>规则：</li>
+</ul>
+<p>如果变量是基本数据类型，此时赋值的是变量所保存的数据值。</p>
+<p>如果变量是引用数据类型，此时赋值的是变量所保存的数据的地址值。</p>
+<ul>
+<li>两个概念：</li>
+</ul>
+<p>形参：方法定义时，声明的小括号内的参数</p>
+<p>实参：方法调用时，实际传递给形参的数据</p>
+<p>形参空有形没有值，其值有传入的实参决定</p>
+<h3 id="递归"><a href="#递归" class="headerlink" title="递归"></a>递归</h3><p>递归就是一个方法调用它自己</p>
+<ul>
+<li><p>递归的必须项：<br>可以拆解为除了数据规模以外，求解思路完全相同的子问题。<br>存在终止条件</p>
+</li>
+<li><p>含义：<br>递归问题必须可以划分为若干小规模问题，并与原问题形式有相同子问题，解题思路相同。</p>
+<p>  是对原问题从大到小的拆解，并且是一个单向有明确终点的拆解，并且有一个临界点，当达到临界点后，往回追朔解决。</p>
+</li>
+</ul>
+<h2 id="构造器"><a href="#构造器" class="headerlink" title="构造器"></a>构造器</h2><h3 id="Constructor"><a href="#Constructor" class="headerlink" title="Constructor"></a>Constructor</h3><ul>
+<li>作用：<ol>
+<li>创建对象</li>
+<li>初始化对象的信息</li>
+</ol>
+</li>
+</ul>
+<ul>
+<li><p>使用：</p>
+<ol>
+<li>如果没显式的定义类的构造器的话，则系统默认提供一个空参的构造器，一旦显示定义了非空构造器，则空构造器需要自己定义</li>
+<li>定义构造器的格式：权限修饰符  类名(形参列表){}</li>
+<li>一个类中定义的多个构造器，彼此构成重载</li>
+<li>一个类中，至少会有一个构造器。</li>
+</ol>
+</li>
+</ul>
+<h3 id="JavaBean"><a href="#JavaBean" class="headerlink" title="JavaBean"></a>JavaBean</h3><ul>
+<li>类是公共的，public class</li>
+<li>一个无参的公共的构造器</li>
+<li>定义属性并有对应的get、set方法</li>
+</ul>
+<h2 id="代码块"><a href="#代码块" class="headerlink" title="代码块"></a>代码块</h2><ul>
+<li>把一些不能在class中直接写入的代码包住</li>
+<li>常用作一些方法形参的提前初始化</li>
+</ul>
+<h2 id="内部类"><a href="#内部类" class="headerlink" title="内部类"></a>内部类</h2><p>一个类A声明在另一个类B中，则类A就是内部类，类B称为外部类</p>
+<h2 id="Object"><a href="#Object" class="headerlink" title="Object"></a>Object</h2><h3 id="java-lang-Object"><a href="#java-lang-Object" class="headerlink" title="java.lang.Object"></a>java.lang.Object</h3><p>作为所有class的父类</p>
+<h3 id="equals"><a href="#equals" class="headerlink" title=".equals()"></a>.equals()</h3><p>boolean (Object obj)</p>
+<p>比较的是堆中的值，被String重写，常被继承的子类重写。</p>
+<h3 id="getClass"><a href="#getClass" class="headerlink" title=".getClass()"></a>.getClass()</h3><p>返回运行时类，常用于泛型和反射</p>
+<h3 id="hashCode"><a href="#hashCode" class="headerlink" title=".hashCode()"></a>.hashCode()</h3><p>返回当前对象的哈希值，冲突率极低，基于存储地址和类的特性来确定的。</p>
+<p>至于为什么是31，不是1不是2也不是100，是因为31是2^5-1，可以很快的用位运算符得到，至于为什么不是别的2的倍数-1，是因为比31小的冲突多，比31大的和31性能差不多，但是占用了更多的内存</p>
+<h3 id="toString-NaN"><a href="#toString-NaN" class="headerlink" title=".toString()"></a>.toString()</h3><p>返回类的信息(String)，若是没有重写过，则返回字符串表示形式，重写后常作为当前类的信息。</p>
+<h1 id="三大特性"><a href="#三大特性" class="headerlink" title="三大特性"></a>三大特性</h1><h2 id="封装"><a href="#封装" class="headerlink" title="封装"></a>封装</h2><ul>
+<li>隐藏对象内部的复杂性，只对外公开简单的接口。便于外界调用，从而提高系统的可扩展性、可维护性。通俗的说，把该隐藏的隐藏起来，该暴露的暴露出来。这就是封装性的设计思想。</li>
+<li>代码体现：<ol>
+<li>属性私有化，提供公共的方法来get、set</li>
+<li>不对外暴露私有的方法</li>
+<li>单例模式(将构造器私有化)</li>
+<li>修饰类为缺省，让其不能在其他包内调用</li>
+</ol>
+</li>
+</ul>
+<p>4种权限都可以用来修饰类的内部结构：属性、方法、构造器、内部类<br>修饰类的话，只能使用：缺省、public</p>
+<h2 id="继承"><a href="#继承" class="headerlink" title="继承"></a>继承</h2><p>继承是分类的艺术，比如生物种属的划分更为贴切。</p>
+<p>越高的种属拥有越概括性的属性和特点，子子孙孙的继承拓展出自己的特性。</p>
+<h3 id="格式"><a href="#格式" class="headerlink" title="格式"></a>格式</h3><p>class A extends B{ }</p>
+<p>A:子类、派生类、subclass</p>
+<p>B:父类、超类、基类、superclass</p>
+<h3 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h3><ul>
+<li>减少了代码的冗余，提高了代码的复用性</li>
+<li>便于功能的扩展</li>
+<li>为之后多态性的使用，提供了前提<h3 id="subclass"><a href="#subclass" class="headerlink" title="subclass"></a>subclass</h3></li>
+<li>继承父类后，得到父类所有的属性和方法，父类中private修饰的属性和方法不能直接调用，可以用get/set或使用父类中public方法中被调用<br>子类可以拓展功能，或重写方法<h3 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h3></li>
+<li>一个类可以被多个子类继承。</li>
+<li>Java中类的单继承性：一个类只能有一个父类</li>
+<li>子父类是相对的概念。</li>
+<li>子类直接继承的父类，称为：直接父类。间接继承的父类称为：间接父类</li>
+<li>子类继承父类以后，就获取了直接父类以及所间接父类中声明的属性和方法<h3 id="重写"><a href="#重写" class="headerlink" title="重写"></a>重写</h3></li>
+<li>子类重写的方法的方法名和形参列表与父类被重写的方法的方法名和形参列表相同</li>
+<li>子类重写的方法的权限修饰符不小于父类被重写的方法的权限修饰符</li>
+</ul>
+<p>返回值：<br>父子皆空、臭味相投、为父则刚（extends或throws）</p>
+<h2 id="多态"><a href="#多态" class="headerlink" title="多态"></a>多态</h2><p>理解为一个事物的多种形态。</p>
+<p>父类的引用指向子类的对象（或子类的对象赋给父类的引用）</p>
+<p>假设声明一个class A 其父类为Object</p>
+<pre><code>Object a = new A( );
+</code></pre>
+<p>向上转型才是多态</p>
+<p>抽象类、接口的使用肯定体现了多态性。</p>
+<h3 id="虚拟调用"><a href="#虚拟调用" class="headerlink" title="虚拟调用"></a>虚拟调用</h3><p>只适用于方法，不适用于属性</p>
+<p>有了对象的多态性以后，我们在编译期，只能调用父类中声明的方法，但在运行期，我们实际执行的是子类重写父类的方法。</p>
+<p><strong>编译，看左边；运行，看右边。</strong></p>
+<h3 id="前提"><a href="#前提" class="headerlink" title="前提"></a>前提</h3><p>类的继承关系<br>方法的重写</p>
+<h3 id="非多态-向下转型"><a href="#非多态-向下转型" class="headerlink" title="非多态 向下转型"></a>非多态 向下转型</h3><ul>
+<li>使用强制类型转换符( )</li>
+<li>使用强转后，编译时父类转化为实际的子类，使子类可以调用其特有的方法</li>
+<li>使用 a instanceof A 判断a是否为A的实例，表示a是A类或A的父类，极大的避免了ClassCastException的异常</li>
+</ul>
+<h1 id="关键字"><a href="#关键字" class="headerlink" title="关键字"></a>关键字</h1><h2 id="static"><a href="#static" class="headerlink" title="static"></a>static</h2><p>修饰类的内部结构</p>
+<p>属性、方法、代码块、内部类</p>
+<h3 id="属性-1"><a href="#属性-1" class="headerlink" title="属性"></a>属性</h3><p>名为静态变量，表示，尽管new了很多同类对象，但是静态变量是共享的</p>
+<p>说明</p>
+<ul>
+<li><p>静态变量随着类的加载而加载。可以通过”类.静态变量”的方式进行调用</p>
+</li>
+<li><p>静态变量的加载要早于对象的创建。</p>
+</li>
+<li><p>由于类只会加载一次，则静态变量在内存中也只会存在一份：存在方法区的静态域中。</p>
+<h3 id="方法-1"><a href="#方法-1" class="headerlink" title="方法"></a>方法</h3></li>
+<li><p>随着类的加载而加载，可以通过”类.静态方法”的方式进行调用</p>
+</li>
+<li><p>静态方法中，只能调用静态的方法或属性</p>
+</li>
+<li><p>非静态方法中，既可以调用非静态的方法或属性，也可以调用静态的方法或属性</p>
+<h3 id="代码块-1"><a href="#代码块-1" class="headerlink" title="代码块"></a>代码块</h3><p>要用修饰符只能用static</p>
+</li>
+<li><p>内部可以输出语句</p>
+</li>
+<li><p>随着类的加载而执行,而且只执行一次</p>
+</li>
+<li><p>作用：初始化类的信息</p>
+</li>
+<li><p>如果一个类中定义了多个静态代码块，则按照声明的先后顺序执行</p>
+</li>
+<li><p>静态代码块的执行要优先于非静态代码块的执行</p>
+</li>
+<li><p>静态代码块内只能调用静态的属性、静态的方法，不能调用非静态的结构</p>
+</li>
+</ul>
+<p><strong>由父及子，静态先行。</strong></p>
+<h3 id="内部类-1"><a href="#内部类-1" class="headerlink" title="内部类"></a>内部类</h3><ul>
+<li>创建静态内部类</li>
+</ul>
+<pre><code>    public class out&#123;
+        static class in&#123;
+        &#125;
+    &#125;
+    out.in clazz = new out.int();
+</code></pre>
+<ul>
+<li>创建非静态内部类</li>
+</ul>
+<pre><code>    public class out&#123;
+        class in&#123;
+        &#125;
+    &#125;
+    out.in clazz = new int();
+</code></pre>
+<h2 id="final"><a href="#final" class="headerlink" title="final"></a>final</h2><p>可以用来修饰：类、方法、变量</p>
+<h3 id="类"><a href="#类" class="headerlink" title="类"></a>类</h3><p>此类不能被其他类所继承。</p>
+<p>String类、System类、StringBuffer类</p>
+<h3 id="方法-2"><a href="#方法-2" class="headerlink" title="方法"></a>方法</h3><p>表明此方法不可以被重写</p>
+<h3 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h3><p>修饰为final的变量 可以视为一个常量</p>
+<p>常用大写字母表示</p>
+<p>声明时没有初始化，则在第一次赋值时表现为常量</p>
+<p>static final 用来修饰属性：全局常量</p>
+<h2 id="abstract"><a href="#abstract" class="headerlink" title="abstract"></a>abstract</h2><p>修饰类、方法</p>
+<p>abstract不能用来修饰私方法、静态方法、final的方法、final的类</p>
+<h3 id="类-1"><a href="#类-1" class="headerlink" title="类"></a>类</h3><p>抽象类</p>
+<ul>
+<li><p>此类不能实例化</p>
+</li>
+<li><p>抽象类中一定有构造器，便于子类实例化时调用（涉及：子类对象实例化的全过程）</p>
+</li>
+<li><p>开发中，都会提供抽象类的子类，让子类对象实例化，完成相关的操作</p>
+<h3 id="方法-3"><a href="#方法-3" class="headerlink" title="方法"></a>方法</h3><p>抽象方法</p>
+</li>
+<li><p>抽象方法只方法的声明，没方法体</p>
+</li>
+<li><p>包含抽象方法的类，一定是一个抽象类。反之，抽象类中可以没有抽象方法的。</p>
+</li>
+<li><p>若子类重写了父类中的所的抽象方法后，此子类方可实例化</p>
+</li>
+<li><p>若子类没重写父类中的所的抽象方法，则此子类也是一个抽象类，需要使- 用abstract修饰</p>
+<h2 id="interface"><a href="#interface" class="headerlink" title="interface"></a>interface</h2><p>Java中只能单继承，接口可以多实例。</p>
+</li>
+</ul>
+<p>接口和类是并列的两个结构</p>
+<h2 id="return"><a href="#return" class="headerlink" title="return"></a>return</h2><p>使用在方法体中</p>
+<p>用于结束方法，带返回值类型的方法时用于返回数据</p>
+<p>return后不能声明语句</p>
+<h2 id="package-import"><a href="#package-import" class="headerlink" title="package/import"></a>package/import</h2><p>更好的实现项目管理</p>
+<h3 id="MVC"><a href="#MVC" class="headerlink" title="MVC"></a>MVC</h3><ul>
+<li><p>M model 主要处理数据<br>  bean、dao、db</p>
+</li>
+<li><p>V view 显示数据<br>  utils、ui</p>
+</li>
+<li><p>C controller 处理业务逻辑<br>  service、base、adapter、activity</p>
+<h3 id="JDK"><a href="#JDK" class="headerlink" title="JDK"></a>JDK</h3></li>
+<li><p>java.lang | 该包提供了Java编程的核心基础类，例如 Object、Math、String、StringBuffer、System、Thread等，不使用该包就很难编写Java代码了</p>
+</li>
+<li><p>java.awt | 提供了创建界面和绘制图形图像的所有类，构成抽象窗口工具、GUI设计</p>
+</li>
+<li><p>java.net | 该包提供实现网络应用与开发的类。</p>
+</li>
+<li><p>java.io | 该包通过文件系统、数据流和序列化提供系统的输入与输出。</p>
+</li>
+<li><p>java.util | 包含一些使用工具类，定义系统特性、使用日期日历</p>
+</li>
+<li><p>java.text | Java格式化的类</p>
+</li>
+<li><p>java.sql | 包含JDBC数据库编程的相关类和接口</p>
+<h3 id="package"><a href="#package" class="headerlink" title="package"></a>package</h3><p>实现项目中类的管理</p>
+</li>
+<li><p>使用package声明类或接口所属的包，声明在源文件的首行</p>
+</li>
+<li><p>包，属于标识符，遵循标识符的命名规则、规范(xxxyyyzzz)、“见名知意”</p>
+</li>
+<li><p>每”.”一次，就代表一层文件目录。</p>
+<h3 id="import"><a href="#import" class="headerlink" title="import"></a>import</h3></li>
+<li><p>在源文件中显式的使用import结构导入指定包下的类、接口</p>
+</li>
+<li><p>声明在包的声明和类的声明之间</p>
+</li>
+<li><p>如果需要导入多个结构，则并列写出即可</p>
+</li>
+<li><p>可以使用”xxx.*”的方式，表示可以导入xxx包下的所结构</p>
+</li>
+<li><p>如果使用的类或接口是java.lang包下定义的，则可以省略import结构</p>
+</li>
+<li><p>如果使用的类或接口是本包下定义的，则可以省略import结构</p>
+</li>
+<li><p>如果在源文件中，使用了不同包下的同名的类，则必须至少一个类需要以全类名的方式显示。</p>
+</li>
+<li><p>使用”xxx.*”方式表明可以调用xxx包下的所结构。但是如果使用的是xxx子包下的结构，则仍需要显式导入</p>
+</li>
+<li><p>import static:导入指定类或接口中的静态结构:属性或方法。</p>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Java/" rel="tag"># Java</a>
+              <a href="/tags/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/" rel="tag"># 面向对象</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/06/21/MySQL-%E5%9F%BA%E7%A1%80/" rel="prev" title="MySQL-基础">
+                  <i class="fa fa-chevron-left"></i> MySQL-基础
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/07/02/Servlet-1/" rel="next" title="Servlet-1">
+                  Servlet-1 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Virogoniagee</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","images":"/images","scheme":"Pisces","version":"8.3.0","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="存储杂谈">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数据存储">
+<meta property="og:url" content="http://example.com/2021/07/29/%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/index.html">
+<meta property="og:site_name" content="Virgoniagee&#39;s blog">
+<meta property="og:description" content="存储杂谈">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-07-29T09:00:35.000Z">
+<meta property="article:modified_time" content="2021-07-29T10:24:06.620Z">
+<meta property="article:author" content="Virogoniagee">
+<meta property="article:tag" content="数据存储">
+<meta property="article:tag" content="DB">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2021/07/29/%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>数据存储 | Virgoniagee's blog</title>
+  
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Virgoniagee's blog</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8"><span class="nav-number">1.</span> <span class="nav-text">数据存储</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%B6%E9%97%B4"><span class="nav-number">1.1.</span> <span class="nav-text">时间</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#RAM-ROM"><span class="nav-number">1.1.1.</span> <span class="nav-text">RAM ROM</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8C%81%E4%B9%85%E6%80%A7%E4%B8%80%E8%AF%B4"><span class="nav-number">1.1.2.</span> <span class="nav-text">持久性一说</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#java%E9%87%8C%E7%9A%84%E5%AD%98%E5%82%A8"><span class="nav-number">1.2.</span> <span class="nav-text">java里的存储</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%AC%E5%9C%B0"><span class="nav-number">1.2.1.</span> <span class="nav-text">本地</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9C%E7%A8%8B"><span class="nav-number">1.2.2.</span> <span class="nav-text">远程</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Virogoniagee"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Virogoniagee</p>
+  <div class="site-description" itemprop="description">be 😎. be 🐱</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">31</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Virgoniagee" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Virgoniagee" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:sherleypeetzo@gmail.com" title="E-Mail → mailto:sherleypeetzo@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/07/29/%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Virogoniagee">
+      <meta itemprop="description" content="be 😎. be 🐱">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Virgoniagee's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          数据存储
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2021-07-29 17:00:35 / 修改时间：18:24:06" itemprop="dateCreated datePublished" datetime="2021-07-29T17:00:35+08:00">2021-07-29</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%9D%82%E8%B0%88/" itemprop="url" rel="index"><span itemprop="name">杂谈</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+            <div class="post-description">存储杂谈</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="数据存储"><a href="#数据存储" class="headerlink" title="数据存储"></a>数据存储</h1><h2 id="时间"><a href="#时间" class="headerlink" title="时间"></a>时间</h2><p>根据数据存储的位置，可以简单的分类数据存储的时间</p>
+<h3 id="RAM-ROM"><a href="#RAM-ROM" class="headerlink" title="RAM ROM"></a>RAM ROM</h3><p>RAM 随机存储，用于内存，掉电即失，但是IO的速度很快</p>
+<p>ROM 掉电仍存，常用于内容的存储，比如电脑的硬盘，但是IO的速度比RAM慢得多</p>
+<p>题外话 装过电脑的应该知道，基本构成一个电脑的必要硬件有CPU、内存、硬盘（机械硬盘/SSD）、主板、电源，至于独显按需购入吧</p>
+<p>简单说就是在主板上集成以上提到的所有其他硬件，主板上提供相应的硬件驱动”连接”各个硬件，而CPU的阵脚和intel/AMD，又是另外一回事了，但是总体来说，影响计算机性能的主要硬件是CPU线程数核心数频率和架构，内存频率和大小</p>
+<p>CPU是计算机的核心，所有的资源都由它调度，但是CPU速度虽然快，但是不能在那么小的器件上放下那么多晶体，所以需要内存和硬。比如在电脑上我想运行一个软件，基本的流程是这样的：</p>
+<blockquote>
+<p>用户.exe告诉电脑我想用软件-&gt;CPU把这个任务提上日程用指令集-&gt;等待从内存中加载资源-&gt;内存向硬盘读取文件-&gt;一切准备就绪之后-&gt;CPU也有空了那就开始把资源加载到寄存器进行计算  </p>
+</blockquote>
+<p>一套下来，在进程中出现了软件，表示已经开始在运行了，至于其中更小的细节，那就需要再深入了解计算机组成原理看硬件的调度，和操作系统看怎么用指令集保证CPU和各个组件之间有条不紊的进行和IO读取</p>
+<p>说回正题 从以上的过程可以看出来，在读取速度上来看：CPU&gt;&gt;内存&gt;&gt;硬盘，容量大小CPU&lt;&lt;内存&lt;&lt;硬盘。所以一些等待使用的数据需要持久性的存入硬盘中，即将使用的资源就加载到内存中，需要计算的就等CPU调度计算</p>
+<h3 id="持久性一说"><a href="#持久性一说" class="headerlink" title="持久性一说"></a>持久性一说</h3><p>有了以上的了解，应该能知道持久性是什么了，持久性就是能够实际被放到了晶体管寄存器中的物理存在，掉电不会丢失</p>
+<h2 id="java里的存储"><a href="#java里的存储" class="headerlink" title="java里的存储"></a>java里的存储</h2><p>在学习Java的时候，甚至是其他的语言，总会学到语言下的基本数据类型，所有的语言大同小异，基本数据类型承载了我们的数据，但是存储时是存在内存中的，都不用掉电，把进程杀死之后，内存里的数据就消失了，当一些数据需要被持久的记录时，就需要把数据放到硬盘中</p>
+<p>所有的操作，都要结合IO流来，通过IO流把数据用文件存储下，下次需要的时候，再通过IO从文件中读取出来，所以这也能解释一下，为什么一些软件安装之后，需要自定义安装目录，而安装目录下的文件结构是固定的，把用户产生的数据也统一的存储在某一个地方，这些都是程序在IO操作时候必须指明的，否则就找不到了，就空指针了</p>
+<h3 id="本地"><a href="#本地" class="headerlink" title="本地"></a>本地</h3><p>在本地，存储的数据就是仅自己可读可取，IO流下，可以把数据存成字符格式，流媒体格式等等，若是存储的数据很少，甚至可以用log文件来存储</p>
+<p>一些有逻辑联系的数据又能通过数据库来放置，那进程去IO操作的时候 就需要遵循数据库的规则来读取，这是约定俗成的，就是JDBC四大件 driver、url、user、password</p>
+<h3 id="远程"><a href="#远程" class="headerlink" title="远程"></a>远程</h3><p>本地的电脑总有关机的时候，那在电脑关机的时候，数据就读不到了，那远程的服务器就解决了这个问题</p>
+<p>从本质上来说，远程的服务器，在服务器本身角度来看，也就是做了本地的存储，只不过对于客户端来说，远程的，就是服务器</p>
+<p>服务器匹配ip后将主机暴露在www中，再提供一个port让知道ip的客户端能够访问这个port下的进程，从而读取数据</p>
+<p>而客户端是怎么通过ip就连接到服务器的过程，详情看计算机网络</p>
+<p>远程暴露了ip提供访问，给服务器带来的问题就是IO的负担太重了，只要知道ip的都能去ping一下，知道了port还能去操作一下，所以有了session、Nginx用来控制客户端的访问。</p>
+<p>前面说服务器在本身看来其实也是本地，也就是客户端，他也能去调用其他的服务器，那太多的IO操作是被崩的，所以就有缓存Redis等一系列非关系型数据库，提高IO效率</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/" rel="tag"># 数据存储</a>
+              <a href="/tags/DB/" rel="tag"># DB</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/07/02/Java-%E6%A6%82%E8%BF%B0/" rel="prev" title="Java-概述">
+                  <i class="fa fa-chevron-left"></i> Java-概述
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/07/29/%E4%BA%8B%E5%8A%A1/" rel="next" title="事务">
+                  事务 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Virogoniagee</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

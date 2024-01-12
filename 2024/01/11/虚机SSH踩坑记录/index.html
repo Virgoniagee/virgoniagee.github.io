@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","images":"/images","scheme":"Pisces","version":"8.3.0","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="记录多次虚机安装中SSH时所踩的坑，并分析前提">
+<meta property="og:type" content="article">
+<meta property="og:title" content="虚机SSH踩坑记录">
+<meta property="og:url" content="http://example.com/2024/01/11/%E8%99%9A%E6%9C%BASSH%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/index.html">
+<meta property="og:site_name" content="Virgoniagee&#39;s blog">
+<meta property="og:description" content="记录多次虚机安装中SSH时所踩的坑，并分析前提">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://image.virginiagee.top/Snipaste_2024-01-11_01-16-42.png">
+<meta property="article:published_time" content="2024-01-10T16:58:03.000Z">
+<meta property="article:modified_time" content="2024-01-12T12:53:07.323Z">
+<meta property="article:author" content="Virogoniagee">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="网络">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://image.virginiagee.top/Snipaste_2024-01-11_01-16-42.png">
+
+
+<link rel="canonical" href="http://example.com/2024/01/11/%E8%99%9A%E6%9C%BASSH%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>虚机SSH踩坑记录 | Virgoniagee's blog</title>
+  
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Virgoniagee's blog</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B8%A9%E5%9D%91%E6%B1%87%E6%80%BB"><span class="nav-number">1.</span> <span class="nav-text">踩坑汇总</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Case1%EF%BC%9A%E9%9D%99%E6%80%81IP%E7%9A%84ens-33%E9%85%8D%E7%BD%AE%E4%B8%8D%E6%88%90%E5%8A%9F"><span class="nav-number">1.1.</span> <span class="nav-text">Case1：静态IP的ens-33配置不成功</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%8E%9F%E5%9B%A0%EF%BC%9Aens-33%E7%9A%84%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E9%94%99%E8%AF%AF"><span class="nav-number">1.1.1.</span> <span class="nav-text">原因：ens-33的配置文件错误</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95%EF%BC%9A%E9%87%8D%E8%A3%85%E4%BA%86%E7%B3%BB%E7%BB%9F%E5%B9%B6%E4%BF%AE%E6%94%B9%E4%B8%BA%E9%9D%99%E6%80%81ip"><span class="nav-number">1.1.2.</span> <span class="nav-text">解决办法：重装了系统并修改为静态ip</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Case2%EF%BC%9Aping-xxxxx-Name-or-service-not-known"><span class="nav-number">1.2.</span> <span class="nav-text">Case2：ping: xxxxx: Name or service not known</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%8E%9F%E5%9B%A0%EF%BC%9ADNS%E6%9C%AA%E9%85%8D%E7%BD%AE%E6%88%96%E6%9C%AA%E7%94%9F%E6%95%88"><span class="nav-number">1.2.1.</span> <span class="nav-text">原因：DNS未配置或未生效</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95%EF%BC%9A%E9%85%8D%E7%BD%AEDNS%E5%B9%B6%E9%87%8D%E5%90%AF%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%EF%BC%8C%E8%BF%98%E6%9C%AA%E8%83%BD%E8%A7%A3%E5%86%B3%E5%B0%B1%E9%87%8D%E8%A3%85"><span class="nav-number">1.2.2.</span> <span class="nav-text">解决办法：配置DNS并重启网络服务，还未能解决就重装</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Case3%EF%BC%9A%E6%9B%B4%E6%8D%A2%E7%BD%91%E7%BB%9C%E7%8E%AF%E5%A2%83%E5%90%8E%E4%B8%8D%E8%83%BDssh"><span class="nav-number">1.3.</span> <span class="nav-text">Case3：更换网络环境后不能ssh</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95%EF%BC%9A%E4%BF%AE%E6%94%B9%E6%9C%AC%E6%9C%BA%E7%9A%84%E8%99%9A%E6%8B%9F%E7%BD%91%E5%8D%A1%E9%85%8D%E7%BD%AE"><span class="nav-number">1.3.1.</span> <span class="nav-text">解决办法：修改本机的虚拟网卡配置</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Case4%EF%BC%9AWARNING-REMOTE-HOST-IDENTIFICATION-HAS-CHANGED"><span class="nav-number">1.4.</span> <span class="nav-text">Case4：WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%8E%9F%E5%9B%A0%EF%BC%9A%E5%A4%9A%E6%AC%A1%E5%AE%89%E8%A3%85%E8%99%9A%E6%9C%BA%E9%85%8D%E7%BD%AE%E9%9D%99%E6%80%81ip%E6%97%B6%EF%BC%8C%E9%83%BD%E9%85%8D%E7%BD%AE%E7%9A%84%E7%9B%B8%E5%90%8C%E7%9A%84ip%EF%BC%8C%E5%AF%BC%E8%87%B4%E6%B2%A1%E6%9C%89%E7%94%9F%E6%88%90%E6%96%B0%E7%9A%84%E5%AF%86%E9%92%A5"><span class="nav-number">1.4.1.</span> <span class="nav-text">原因：多次安装虚机配置静态ip时，都配置的相同的ip，导致没有生成新的密钥</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95%EF%BC%9A%E5%88%A0%E9%99%A4%E6%9C%AC%E6%9C%BA%E4%B8%AD%E7%9A%84%E5%85%AC%E9%92%A5%E5%86%8D%E6%AC%A1ssh%E7%94%9F%E6%88%90%E6%96%B0%E7%9A%84%E5%85%AC%E9%92%A5"><span class="nav-number">1.4.2.</span> <span class="nav-text">解决办法：删除本机中的公钥再次ssh生成新的公钥</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E9%A1%BA%E7%95%85%E7%9A%84%E5%AE%8C%E6%88%90%E6%9C%AC%E6%9C%BA%E7%9A%84ssh%E6%93%8D%E4%BD%9C"><span class="nav-number">2.</span> <span class="nav-text">如何顺畅的完成本机的ssh操作</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%99%9A%E6%9C%BA%E5%A6%82%E4%BD%95%E8%81%94%E7%BD%91"><span class="nav-number">2.1.</span> <span class="nav-text">虚机如何联网</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%AE%8C%E6%88%90ssh%E7%9A%84%E5%89%8D%E6%8F%90"><span class="nav-number">2.1.1.</span> <span class="nav-text">完成ssh的前提</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Virogoniagee"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Virogoniagee</p>
+  <div class="site-description" itemprop="description">be 😎. be 🐱</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">31</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Virgoniagee" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Virgoniagee" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:sherleypeetzo@gmail.com" title="E-Mail → mailto:sherleypeetzo@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/01/11/%E8%99%9A%E6%9C%BASSH%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Virogoniagee">
+      <meta itemprop="description" content="be 😎. be 🐱">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Virgoniagee's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          虚机SSH踩坑记录
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-01-11 00:58:03" itemprop="dateCreated datePublished" datetime="2024-01-11T00:58:03+08:00">2024-01-11</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2024-01-12 20:53:07" itemprop="dateModified" datetime="2024-01-12T20:53:07+08:00">2024-01-12</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+            <div class="post-description">记录多次虚机安装中SSH时所踩的坑，并分析前提</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h3 id="踩坑汇总"><a href="#踩坑汇总" class="headerlink" title="踩坑汇总"></a>踩坑汇总</h3><p>目前我在win10的机子中用vmware安装centos7的mini安装包版本。</p>
+<p>在基本的配置完成os的时区、分区、管理员账号等，就开始踩坑SSH的日常了。</p>
+<p>所有的踩坑都是基于虚机是静态IP的情形，并且都已经配置好了虚拟网络编辑器。</p>
+<h4 id="Case1：静态IP的ens-33配置不成功"><a href="#Case1：静态IP的ens-33配置不成功" class="headerlink" title="Case1：静态IP的ens-33配置不成功"></a>Case1：静态IP的ens-33配置不成功</h4><p>修改ens-33的配置文件中，因为窗口太小，以为虚机卡住，所以一直在del和移动，当调整好窗口大小之后，有一些文字已经被修改，即使我重新核对了ens-33的配置文件并重启之后，依旧没有修改成功。</p>
+<p>期间尝试过修改ens-33中的static模式、重启为yes、增加静态ip、网关、子网掩码和国内dns等，也没有让虚机连接上网络（ping通baidu）。</p>
+<h5 id="原因：ens-33的配置文件错误"><a href="#原因：ens-33的配置文件错误" class="headerlink" title="原因：ens-33的配置文件错误"></a>原因：ens-33的配置文件错误</h5><h5 id="解决办法：重装了系统并修改为静态ip"><a href="#解决办法：重装了系统并修改为静态ip" class="headerlink" title="解决办法：重装了系统并修改为静态ip"></a>解决办法：重装了系统并修改为静态ip</h5><h4 id="Case2：ping-xxxxx-Name-or-service-not-known"><a href="#Case2：ping-xxxxx-Name-or-service-not-known" class="headerlink" title="Case2：ping: xxxxx: Name or service not known"></a>Case2：ping: xxxxx: Name or service not known</h4><p>其实看到name or service时，就知道是DNS没有被识别了，那么添加ens-33中的DNS并重启network service即可，如果还没有生效，只能重装了</p>
+<h5 id="原因：DNS未配置或未生效"><a href="#原因：DNS未配置或未生效" class="headerlink" title="原因：DNS未配置或未生效"></a>原因：DNS未配置或未生效</h5><h5 id="解决办法：配置DNS并重启网络服务，还未能解决就重装"><a href="#解决办法：配置DNS并重启网络服务，还未能解决就重装" class="headerlink" title="解决办法：配置DNS并重启网络服务，还未能解决就重装"></a>解决办法：配置DNS并重启网络服务，还未能解决就重装</h5><h4 id="Case3：更换网络环境后不能ssh"><a href="#Case3：更换网络环境后不能ssh" class="headerlink" title="Case3：更换网络环境后不能ssh"></a>Case3：更换网络环境后不能ssh</h4><p>当时房间的路由器损坏了，一切恢复并再次分配本机ip和虚拟网卡的ip后，虚机有网，但是本机并不能ssh。</p>
+<p>多番资料查询后，检查到我的虚拟网卡，在win10中的网络配置并没有配置成静态的模式。</p>
+<h5 id="解决办法：修改本机的虚拟网卡配置"><a href="#解决办法：修改本机的虚拟网卡配置" class="headerlink" title="解决办法：修改本机的虚拟网卡配置"></a>解决办法：修改本机的虚拟网卡配置</h5><p>进入以下路径</p>
+<p><code>控制面板\网络和 Internet\网络连接</code></p>
+<p><img src="http://image.virginiagee.top/Snipaste_2024-01-11_01-16-42.png" alt="本机虚拟网卡配置"></p>
+<p>修改网卡的ip地址和虚机中的虚拟网络编辑器中静态ip的配置信息，保障在同一个网段下，例如，都在192.168.127.x下</p>
+<p>这样就保证了虚拟网卡和虚机在同一个局域网内，便可以ssh了。</p>
+<h4 id="Case4：WARNING-REMOTE-HOST-IDENTIFICATION-HAS-CHANGED"><a href="#Case4：WARNING-REMOTE-HOST-IDENTIFICATION-HAS-CHANGED" class="headerlink" title="Case4：WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!"></a>Case4：WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!</h4><p>在我多次折腾下，出现了这个问题，大致的意思就是说，我本机的身份信息验证出错了，虚机并不能识别。</p>
+<p>这里补充一个小知识，当本机向虚机首次创建ssh连接时，是会在本机的host中生成对应的密钥的，那么每次ssh时，本机都会将host中生成的密钥放入请求中去连接虚机。</p>
+<h5 id="原因：多次安装虚机配置静态ip时，都配置的相同的ip，导致没有生成新的密钥"><a href="#原因：多次安装虚机配置静态ip时，都配置的相同的ip，导致没有生成新的密钥" class="headerlink" title="原因：多次安装虚机配置静态ip时，都配置的相同的ip，导致没有生成新的密钥"></a>原因：多次安装虚机配置静态ip时，都配置的相同的ip，导致没有生成新的密钥</h5><h5 id="解决办法：删除本机中的公钥再次ssh生成新的公钥"><a href="#解决办法：删除本机中的公钥再次ssh生成新的公钥" class="headerlink" title="解决办法：删除本机中的公钥再次ssh生成新的公钥"></a>解决办法：删除本机中的公钥再次ssh生成新的公钥</h5><p>路径地址：<code>C:\Users\[你的用户名]\.ssh</code>的known_hosts中，找到自己设置的那个静态ip，删除</p>
+<h3 id="如何顺畅的完成本机的ssh操作"><a href="#如何顺畅的完成本机的ssh操作" class="headerlink" title="如何顺畅的完成本机的ssh操作"></a>如何顺畅的完成本机的ssh操作</h3><p>在踩完以上的所有坑之后，我对网络的连接有了更深层的理解。</p>
+<h4 id="虚机如何联网"><a href="#虚机如何联网" class="headerlink" title="虚机如何联网"></a>虚机如何联网</h4><p>可能你也有这样的疑惑，vmware中安装的虚机，对于物理来说，应该是隔离的，那是怎样能联网呢？</p>
+<p>首先，vmware会虚拟化出vmware环境下的虚拟网卡，这样就有了联网的前提。Ps：这个网卡自己可以多设置几个，用于做不同开发、测试、生产环境的网络隔离。</p>
+<p>然后，vmware生成的虚拟网卡，在本机的网络环境中是可配置化的，这由我们本机的物理网卡实现，比如我使用的网卡是AX200，除了我本身连接的wifi配置了一个ip外，由vmware生成的虚拟网卡，也为我分配了一个ip。</p>
+<p>最后，让我的本机和vmware网卡在同一个局域网内，那么我的本机和产生wifi的路由器，将作为TCP/IP请求的一环，作为中间跳板，为虚机提供万维网服务。</p>
+<p>最终，虚机就能联网了，同时也让本机和vmware中的机器处在了同一个局域网内，方便ssh连接和共享文件。</p>
+<h5 id="完成ssh的前提"><a href="#完成ssh的前提" class="headerlink" title="完成ssh的前提"></a>完成ssh的前提</h5><p>首先肯定是要ping通，然后虚机的22端口是通畅的，并且虚机的防火墙要打开，iptable中也做对应的配置，降低虚机的物理防御，当然，如果是使用的云服务，最好是只为本机开一个白名单即可。</p>
+<p>其次，为了每次方便ssh，将虚机配置为静态ip。</p>
+<p>如果还可能失败，那就检查一下自己本机内生成的公钥是不是和当前的虚机并不匹配。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Linux/" rel="tag"># Linux</a>
+              <a href="/tags/%E7%BD%91%E7%BB%9C/" rel="tag"># 网络</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/12/08/Spring-%E5%B0%8F%E7%BB%93/" rel="prev" title="Spring-小结">
+                  <i class="fa fa-chevron-left"></i> Spring-小结
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Virogoniagee</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

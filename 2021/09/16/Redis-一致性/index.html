@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","images":"/images","scheme":"Pisces","version":"8.3.0","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="一致性的理解，Redis如何降低一致性风险。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Redis-一致性">
+<meta property="og:url" content="http://example.com/2021/09/16/Redis-%E4%B8%80%E8%87%B4%E6%80%A7/index.html">
+<meta property="og:site_name" content="Virgoniagee&#39;s blog">
+<meta property="og:description" content="一致性的理解，Redis如何降低一致性风险。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-09-16T06:40:39.000Z">
+<meta property="article:modified_time" content="2021-09-16T17:20:12.404Z">
+<meta property="article:author" content="Virogoniagee">
+<meta property="article:tag" content="Redis">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2021/09/16/Redis-%E4%B8%80%E8%87%B4%E6%80%A7/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>Redis-一致性 | Virgoniagee's blog</title>
+  
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Virgoniagee's blog</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E8%87%B4%E6%80%A7%E9%97%AE%E9%A2%98"><span class="nav-number">1.</span> <span class="nav-text">一致性问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%99%E5%9C%A8%E5%89%8D%E9%9D%A2"><span class="nav-number">1.1.</span> <span class="nav-text">写在前面</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E4%BA%A7%E7%94%9F%E7%9A%84"><span class="nav-number">1.2.</span> <span class="nav-text">如何产生的</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%84%E7%90%86Redis%E4%B8%80%E8%87%B4%E6%80%A7%E9%97%AE%E9%A2%98"><span class="nav-number">2.</span> <span class="nav-text">处理Redis一致性问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%8C%E6%9B%B4%E6%96%B0%E6%A8%A1%E5%BC%8F"><span class="nav-number">2.1.</span> <span class="nav-text">双更新模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%8E%E5%88%A0%E7%BC%93%E5%AD%98"><span class="nav-number">2.2.</span> <span class="nav-text">后删缓存</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AF%BB"><span class="nav-number">2.2.1.</span> <span class="nav-text">读</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%86%99"><span class="nav-number">2.2.2.</span> <span class="nav-text">写</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BB%B6%E6%97%B6%E5%8F%8C%E5%88%A0"><span class="nav-number">2.3.</span> <span class="nav-text">延时双删</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%98%93%E7%BC%93%E5%AD%98%E5%87%BB%E7%A9%BF"><span class="nav-number">2.4.</span> <span class="nav-text">易缓存击穿</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AF%BB%E6%93%8D%E4%BD%9C%E4%BA%92%E6%96%A5"><span class="nav-number">2.4.1.</span> <span class="nav-text">读操作互斥</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9B%B4%E6%96%B0%E9%9B%86%E4%B8%AD"><span class="nav-number">2.4.2.</span> <span class="nav-text">更新集中</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BC%B1%E5%8C%96%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="nav-number">2.4.3.</span> <span class="nav-text">弱化数据库</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Virogoniagee"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Virogoniagee</p>
+  <div class="site-description" itemprop="description">be 😎. be 🐱</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">31</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Virgoniagee" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Virgoniagee" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:sherleypeetzo@gmail.com" title="E-Mail → mailto:sherleypeetzo@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/09/16/Redis-%E4%B8%80%E8%87%B4%E6%80%A7/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Virogoniagee">
+      <meta itemprop="description" content="be 😎. be 🐱">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Virgoniagee's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Redis-一致性
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-09-16 14:40:39" itemprop="dateCreated datePublished" datetime="2021-09-16T14:40:39+08:00">2021-09-16</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-09-17 01:20:12" itemprop="dateModified" datetime="2021-09-17T01:20:12+08:00">2021-09-17</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E4%B8%80%E8%87%B4%E6%80%A7/" itemprop="url" rel="index"><span itemprop="name">一致性</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+            <div class="post-description">一致性的理解，Redis如何降低一致性风险。</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="一致性问题"><a href="#一致性问题" class="headerlink" title="一致性问题"></a>一致性问题</h2><h3 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h3><p>首先需要明确一点：一致性问题不能解决，只能说降低发生一致性问题的概率，所使用的策略不是一招鲜，需要根据需求，用户访问量，访问的数据性质等来判断，选择使用什么策略。</p>
+<h3 id="如何产生的"><a href="#如何产生的" class="headerlink" title="如何产生的"></a>如何产生的</h3><ul>
+<li>讨论一个单机应用，服务器内只是用一个数据库来实现数据存储，所有的CRUD都通过这一个数据库，那还会存在一致性问题吗？答案是no。</li>
+<li>一致性问题只会产生在 <code>服务器-缓存（redis）-数据库（mySQL）</code> 这样的结构中，表现为同一时刻，缓存和数据库内的读到的数据不同。</li>
+</ul>
+<h2 id="处理Redis一致性问题"><a href="#处理Redis一致性问题" class="headerlink" title="处理Redis一致性问题"></a>处理Redis一致性问题</h2><p>常见的redis封装类有jedis、redission、lettuce</p>
+<p>spring-cache  –AOP  使用lettuce</p>
+<ul>
+<li>启动类加上@EnableCaching注解</li>
+<li>使用CacheManager初始化要使用的缓存框架，使用@CacheConfig注解注入要使用的资源</li>
+<li>@Cacheable-资源缓存击中、@CachePut-资源缓存、@CacheEvict-缓存清除</li>
+<li>CRUD<ul>
+<li>getFromDB</li>
+<li>getFromREdis</li>
+<li>putToDB</li>
+<li>putToRedis</li>
+<li>deleteFromDB</li>
+<li>deleteFromRedis</li>
+</ul>
+</li>
+</ul>
+<p><code>redis--数据库</code> 可以类比为计算机结构中的 <code>内存--HHD+SSD</code> redis具有10wQPS，DB远低于此。</p>
+<p>当对DB和Redis的操作异步进行时，由于Redis更快，无论是先结束还是后结束，都会导致一致性问题。</p>
+<h3 id="双更新模式"><a href="#双更新模式" class="headerlink" title="双更新模式"></a>双更新模式</h3><p>操作不合理，导致数据一致性问题。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">putValue</span><span class="params">(key,value)</span></span>&#123;</span><br><span class="line"></span><br><span class="line">    putToRedis(key,value);</span><br><span class="line"></span><br><span class="line">    putToDB(key,value);<span class="comment">//操作失败了</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>redis没有事务，DB有事务，redis实现更新后，DB操作失败进行回滚，那么redis和DB会数据不一致。</p>
+<p>即使先put到DB再put到redis，由于redis、DB非原子，DB相对较慢，并且处在高并发的场景，若多个操作都需要put，这里需要明确的是，理想情况下，在同一操作下，希望在操作中，DB和redis数据一致。</p>
+<p>是由于业务不合理造成的不一致</p>
+<h3 id="后删缓存"><a href="#后删缓存" class="headerlink" title="后删缓存"></a>后删缓存</h3><p>把双更新中，redis的put改为delete即可，取不到值，则击穿到数据库。</p>
+<p>那么是先删还是后删呢</p>
+<ul>
+<li>先删：同样一个操作，先deleteFromRedis，再putToDB，在delete时，读取该key，则未put到DB中，不论delete是否完成，读取到的都是旧值</li>
+<li>后删：先putToDB，再deleteFromRedis，在put时，若来读取，大概率会读到旧值，put完成后，由于对redis的操作更快，那读取操作会击穿到数据库读到新值，保证在更大概率下读取的是新值</li>
+</ul>
+<p>通常所说的Cache-Aside Pattern</p>
+<h4 id="读"><a href="#读" class="headerlink" title="读"></a>读</h4><ul>
+<li>每次读取数据，都从Cache取<ul>
+<li>读不到cache，从db取，为cache miss</li>
+<li>读到了，则返回cache中的值，为cache hit</li>
+</ul>
+</li>
+<li>将读到的数据放到cache，下次cache hit</li>
+</ul>
+<h4 id="写"><a href="#写" class="headerlink" title="写"></a>写</h4><ul>
+<li>将变更写到db</li>
+<li>删除cache中的对应key数据</li>
+</ul>
+<p>Spring Cache默认实现该模式</p>
+<h3 id="延时双删"><a href="#延时双删" class="headerlink" title="延时双删"></a>延时双删</h3><p>在高并发场景下，可能导致下一次的读操作发生在deleteFromRedis之前，则会出现不一致</p>
+<p>解决思路为确保delete操作一定会执行，所以采用延时双删，其发生时机有</p>
+<ul>
+<li>内存的延时队列里，随JVM进程宕机丢失更新的风险</li>
+<li>MQ，编码复杂</li>
+<li>闪电缓存，超高并发下，发生缓存击穿</li>
+</ul>
+<h3 id="易缓存击穿"><a href="#易缓存击穿" class="headerlink" title="易缓存击穿"></a>易缓存击穿</h3><p>任何删除缓存的动作，都有可能造成缓存击穿，在极高的并发下，不能随便删cache</p>
+<h4 id="读操作互斥"><a href="#读操作互斥" class="headerlink" title="读操作互斥"></a>读操作互斥</h4><p>使用锁or分布式锁控制</p>
+<h4 id="更新集中"><a href="#更新集中" class="headerlink" title="更新集中"></a>更新集中</h4><p>采用定时或binlog方式同步更新</p>
+<h4 id="弱化数据库"><a href="#弱化数据库" class="headerlink" title="弱化数据库"></a>弱化数据库</h4><p>将redis作为落地存储，db作为备份，定时备份到db</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>一致性问题不能彻底解决，只能根据实际的业务场景选择对应的方案，在高并发的场景下，条件更为苛刻，应先考虑维持服务，即避免缓存击穿等问题，可以容忍部分的不一致情景，一切从需求出发</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Redis/" rel="tag"># Redis</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/08/30/%E6%B5%81%E5%AA%92%E4%BD%93download/" rel="prev" title="流媒体download">
+                  <i class="fa fa-chevron-left"></i> 流媒体download
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/09/18/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F-Hello/" rel="next" title="操作系统-Hello">
+                  操作系统-Hello <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Virogoniagee</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
